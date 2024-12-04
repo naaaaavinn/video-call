@@ -1,7 +1,7 @@
 body {
   background: #0f2027;
-  background: -webkit-linear-gradient(to right, #2c5364, #203a43, #0f2027);
-  background: linear-gradient(to right, #2c5364, #203a43, #0f2027);
+  height: 100%;
+  overflow: hidden;
 }
 
 #join-btn {
@@ -18,7 +18,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   height: 90vh;
-  width: 1400px;
+  width: 100%;
   margin: 0 auto;
 }
 
