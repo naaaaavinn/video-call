@@ -1,15 +1,15 @@
+import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 // import logo from "./../assets/react.svg";
 
 export const ConnectForm = ({ connectToVideo }) => {
   const [channelName, setChannelName] = useState("");
+  const [userName, setUserName] = useState("");
   const [invalidInputMsg, setInvalidInputMsg] = useState("");
 
   const handleConnect = async (e) => {
-    e.preventDefault(); // keep the page from reloading on form submission
-    // trim spaces
+    e.preventDefault();
     const trimmedChannelName = channelName.trim();
-    // validate input: make sure channelName is not empty
     if (trimmedChannelName === "") {
       setInvalidInputMsg("Channel name can't be empty."); // show warning
       return;
@@ -27,22 +27,37 @@ export const ConnectForm = ({ connectToVideo }) => {
   };
 
   return (
-    <form onSubmit={handleConnect}>
-      {/* <img src={logo} className="logo" alt="logo" /> */}
-      <div className="card">
-        <input
-          id="channelName"
-          type="text"
-          placeholder="Channel Name"
-          value={channelName}
-          onChange={(e) => {
-            setChannelName(e.target.value);
-            setInvalidInputMsg(""); // clear the error message
-          }}
-        />
-        <button>Connect</button>
-        {invalidInputMsg && <p style={{ color: "red" }}> {invalidInputMsg} </p>}
-      </div>
-    </form>
+    <div className="flex justify-center items-center min-h-[90vh]">
+      <form
+        className="w-full max-w-md bg-white rounded-lg shadow-md p-8"
+        onSubmit={handleConnect}
+      >
+        <div className="mb-4">
+          <TextField
+            id="outlined-basic"
+            label="Name"
+            variant="standard"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-8">
+          <TextField
+            id="outlined-basic"
+            label="Room Name"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            variant="standard"
+            value={channelName}
+            onChange={(e) => setChannelName(e.target.value)}
+            required
+          />
+        </div>
+        <Button type="submit" variant="contained">
+          Connect
+        </Button>
+      </form>
+    </div>
   );
 };

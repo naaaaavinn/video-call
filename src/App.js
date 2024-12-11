@@ -30,10 +30,10 @@ function App() {
   const navigate = useNavigate();
   const agoraClient = useRTCClient(
     AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })
-  ); // Initialize Agora Client
+  );
 
   const handleConnect = (channelName, token, uid) => {
-    navigate(`/via/${channelName}`, { state: { token, uid } }); // on form submit, navigate to new route
+    navigate(`/via/${channelName}`, { state: { token, uid } });
   };
 
   return (

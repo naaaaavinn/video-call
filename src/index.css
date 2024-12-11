@@ -9,9 +9,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: hsl(251.63deg 100% 73.3%);
+  background: #052235;
   height: 100vh;
-  padding: 0 1rem;
+  padding: 0 2rem;
 }
 
 #video-stream {
