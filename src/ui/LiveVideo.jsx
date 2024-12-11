@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import {
   LocalUser,
@@ -14,6 +14,9 @@ import {
 
 export const LiveVideo = () => {
   const appId = process.env.REACT_APP_AGORA_APP_ID;
+  const { state } = useLocation();
+  console.log('state>>>', state);
+  
   // const agoraEngine = useRTCClient( AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })); // Initialize Agora Client
   const { channelName } = useParams(); //pull the channel name from the param
 
@@ -36,8 +39,8 @@ export const LiveVideo = () => {
     {
       appid: appId,
       channel: channelName,
-      token: "007eJxTYJBWTrT+K7zTpXjny5OCwsusMretCL/EOE+4r+Va7Zt1GzcqMCQaWCYnGRmmpSQnpZmkphlZGhgYJKUapZhYJBsZpiQb5eVHpDcEMjKIXX/FwsgAgSA+K0NZZkpqPgMDAILYILE=",
-      uid: null
+      token: state.token,
+      uid: state.uid,
     },
     activeConnection
   );

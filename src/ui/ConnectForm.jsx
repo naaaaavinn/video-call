@@ -5,19 +5,25 @@ export const ConnectForm = ({ connectToVideo }) => {
   const [channelName, setChannelName] = useState("");
   const [invalidInputMsg, setInvalidInputMsg] = useState("");
 
-  const handleConnect = (e) => {
+  const handleConnect = async (e) => {
+    e.preventDefault(); // keep the page from reloading on form submission
     // trim spaces
     const trimmedChannelName = channelName.trim();
-
     // validate input: make sure channelName is not empty
     if (trimmedChannelName === "") {
-      e.preventDefault(); // keep the page from reloading on form submission
       setInvalidInputMsg("Channel name can't be empty."); // show warning
-      setChannelName(""); // resets channel name value in case user entered blank spaces
       return;
     }
-
-    connectToVideo(trimmedChannelName);
+    const baseUrl = process.env.REACT_APP_BASE_URL;
+    const res = await fetch(`${baseUrl}/generate-token`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ channelName: trimmedChannelName }),
+    });
+    const data = await res.json();
+    connectToVideo(trimmedChannelName, data.token, data.uid);
   };
 
   return (
