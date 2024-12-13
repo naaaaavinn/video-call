@@ -16,6 +16,7 @@ import EndCall from "../assets/phone-call-end.png";
 
 export const LiveVideo = () => {
   const appId = process.env.REACT_APP_AGORA_APP_ID;
+  const baseUrl = process.env.REACT_APP_BASE_URL;
   const { state } = useLocation();
   console.log("state>>>", state);
 
@@ -57,13 +58,10 @@ export const LiveVideo = () => {
   audioTracks.forEach((track) => track.play());
 
   async function disconnectCall() {
-    // const userRes = await fetch(
-    //   `http://localhost:8080/delete-user/${currentUser._id}`,
-    //   {
-    //     method: "DELETE",
-    //   }
-    // );
-    // await userRes.json();
+    const userRes = await fetch(`${baseUrl}/delete-user/${state.userId}`, {
+      method: "DELETE",
+    });
+    await userRes.json();
     setActiveConnection(false);
     navigate("/");
   }
@@ -77,7 +75,10 @@ export const LiveVideo = () => {
         {remoteUsers.map((user) => (
           <div
             key={user.uid}
-            className="relative remote-video-container mx-auto h-full rounded-xl border border-gray-800"
+            className={`relative remote-video-container mx-auto rounded-xl border border-gray-800 ${
+              remoteUsers.length === 1 ? "w-4/5" : "w-full"
+            }`}
+            id={`user-id-${user.uid}`}
           >
             <button className="btn absolute top-4 left-4 z-10">
               {user.hasAudio ? (
