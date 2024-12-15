@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 import {
@@ -10,18 +10,50 @@ import {
   usePublish,
   useRemoteAudioTracks,
   useRemoteUsers,
+  useRTCClient,
 } from "agora-rtc-react";
 import MicOff from "../assets/new-mute.png";
 import EndCall from "../assets/phone-call-end.png";
 
 export const LiveVideo = () => {
+  const [userDetails, setUserDetails] = useState({});
   const appId = process.env.REACT_APP_AGORA_APP_ID;
   const baseUrl = process.env.REACT_APP_BASE_URL;
   const { state } = useLocation();
-  console.log("state>>>", state);
-
-  // const agoraEngine = useRTCClient( AgoraRTC.createClient({ codec: "vp8", mode: "rtc" })); // Initialize Agora Client
+  const client = useRTCClient();
   const { channelName } = useParams();
+
+  useEffect(() => {
+    async function userJoined(user) {
+      try {
+        const apiRes = await fetch(`${baseUrl}/get-user`, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            roomName: channelName,
+            uid: user.uid,
+          }),
+        });
+        const memberData = await apiRes.json();
+        if (memberData?.user?.name) {
+          setUserDetails((prev) => ({
+            ...prev,
+            [user.uid]: memberData.user.name,
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    }
+
+    client.on("user-joined", userJoined);
+
+    return () => {
+      client.off("user-joined", userJoined);
+    };
+  }, [client, channelName]);
 
   // set the connection state
   const [activeConnection, setActiveConnection] = useState(true);
@@ -55,10 +87,12 @@ export const LiveVideo = () => {
   const { audioTracks } = useRemoteAudioTracks(remoteUsers);
 
   // play the remote user audio tracks
-  audioTracks.forEach((track) => track.play());
+  useEffect(() => {
+    audioTracks.forEach((track) => track.play());
+  }, [audioTracks]);
 
   async function disconnectCall() {
-    const userRes = await fetch(`${baseUrl}/delete-user/${state.userId}`, {
+    const userRes = await fetch(`${baseUrl}/delete-user/${state.uid}`, {
       method: "DELETE",
     });
     await userRes.json();
@@ -104,6 +138,9 @@ export const LiveVideo = () => {
                 />
               )}
             </button>
+            <button className="absolute bottom-4 left-4 z-10 text-white text-lg capitalize">
+              <p>{userDetails[user.uid]}</p>
+            </button>
             <RemoteUser user={user} />
           </div>
         ))}
@@ -114,7 +151,7 @@ export const LiveVideo = () => {
           videoTrack={localCameraTrack}
           cameraOn={cameraOn}
           micOn={micOn}
-          playAudio={micOn}
+          playAudio={false}
           playVideo={cameraOn}
           className="rounded-xl border-2 border-gray-800"
         />

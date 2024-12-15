@@ -20,33 +20,12 @@ function App() {
     navigate(`/via/${channelName}`, { state: { token, uid, userId } });
   };
 
-  // async function userJoined(user, mediaType) {
-  //   console.log("channelName>>", channelName);
-  //   const remoteUser = document.getElementById(`user-id-${user.uid}`);
-  //   if (!remoteUser) {
-  //     console.error("Remote user element not found.");
-  //     return;
-  //   }
-  //   const apiRes = await fetch(`${baseUrl}/get-user`, {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       roomName: channelName,
-  //       uid: user.uid,
-  //     }),
-  //   });
-  //   const memberData = await apiRes.json();
-  //   console.log("memberData>>>", memberData.user);
-  //   const memberNameDiv = document.createElement("div");
-  //   memberNameDiv.className =
-  //     "absolute bottom-4 left-4 z-10 text-white text-lg capitalize";
-  //   memberNameDiv.innerHTML = `<p>${memberData?.user?.name}</p>`;
-  //   remoteUser.appendChild(memberNameDiv);
-  // }
-
-  // agoraClient.on("user-published", userJoined);
+  agoraClient.on("user-left", async (user) => {
+    const userRes = await fetch(`${baseUrl}/delete-user/${user.uid}`, {
+      method: "DELETE",
+    });
+    await userRes.json();
+  });
 
   const handleConnect = async (e) => {
     e.preventDefault();
