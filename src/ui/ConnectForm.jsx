@@ -8,7 +8,7 @@ export const ConnectForm = ({
   return (
     <div className="flex justify-center items-center min-h-[90vh]">
       <form
-        className="w-full max-w-md bg-white rounded-lg shadow-md p-8"
+        className="w-full max-w-md bg-[#f6f6f6] rounded-lg shadow-md p-8"
         onSubmit={connectToVideo}
       >
         <div className="mb-4">

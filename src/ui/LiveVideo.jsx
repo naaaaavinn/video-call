@@ -102,9 +102,9 @@ export const LiveVideo = () => {
 
   return (
     <div className="pt-8">
-      <h2 className="py-3 flex items-center rounded-md text-lg mb-4 text-white">
+      {/* <h2 className="py-3 flex items-center rounded-md text-lg mb-4 text-white">
         Room: <span className="!text-2xl font-medium ml-2">{channelName}</span>
-      </h2>
+      </h2> */}
       <div id="video-stream">
         {remoteUsers.map((user) => (
           <div
@@ -155,8 +155,8 @@ export const LiveVideo = () => {
           playVideo={cameraOn}
           className="rounded-xl border-2 border-gray-800"
         />
-        <div>
-          <div id="controlsToolbar">
+      </div>
+
             <div id="mediaControls">
               <button className="btn" onClick={() => setMic((a) => !a)}>
                 {micOn ? (
@@ -166,7 +166,7 @@ export const LiveVideo = () => {
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    className="w-9 h-9 bg-green-500 px-2 rounded"
+              className="w-9 h-9 px-2 rounded-full bg-white"
                   >
                     <path
                       stroke-linecap="round"
@@ -178,7 +178,7 @@ export const LiveVideo = () => {
                   <img
                     src={MicOff}
                     alt="Mic off"
-                    className="w-8.5 h-9 bg-red-500 px-2 py-2 rounded"
+              className="w-8.5 h-9 bg-red-500 rounded-full px-2 py-2"
                   />
                 )}
               </button>
@@ -190,7 +190,7 @@ export const LiveVideo = () => {
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    className="w-9 h-9 bg-green-500 px-2 rounded"
+              className="w-9 h-9 bg-white px-2 rounded-full"
                   >
                     <path
                       stroke-linecap="round"
@@ -205,7 +205,7 @@ export const LiveVideo = () => {
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
                     stroke="currentColor"
-                    className="w-9 h-9 bg-red-500 px-2 rounded"
+              className="w-9 h-9 !bg-red-500 px-2 rounded-full"
                   >
                     <path
                       stroke-linecap="round"
@@ -223,9 +223,6 @@ export const LiveVideo = () => {
                 {" "}
                 <img src={EndCall} alt="call-end" className="text-white" />
               </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
