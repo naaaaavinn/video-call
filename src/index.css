@@ -22,10 +22,10 @@ body {
   gap: 1.5rem;
 }
 
-@media screen and (max-width: 1400px) {
-  #video-streams {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    width: 95%;
+@media (max-width: 767px) {
+  #video-stream {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
   }
 }
 

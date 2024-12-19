@@ -6,7 +6,7 @@ export const ConnectForm = ({
   setChannelName,
 }) => {
   return (
-    <div className="flex justify-center items-center min-h-[90vh]">
+    <div className="flex justify-center items-center min-h-[90vh] px-8 md:p-0">
       <form
         className="w-full max-w-md bg-[#f6f6f6] rounded-lg shadow-md p-8"
         onSubmit={connectToVideo}
