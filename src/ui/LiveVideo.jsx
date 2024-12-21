@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
-import {
+import AgoraRTC, {
   LocalUser,
   RemoteUser,
   useJoin,
@@ -11,17 +11,27 @@ import {
   useRemoteAudioTracks,
   useRemoteUsers,
   useRTCClient,
+  useLocalScreenTrack,
+  LocalVideoTrack,
 } from "agora-rtc-react";
 import MicOff from "../assets/new-mute.png";
 import EndCall from "../assets/phone-call-end.png";
+import ScreenShareIcon from "../assets/screen-share.png";
 
 export const LiveVideo = () => {
   const [userDetails, setUserDetails] = useState({});
+  const [screenShareOn, setScreenShareOn] = useState(false);
+  const [screenTrack, setScreenTrack] = useState(null); // State for screen track
   const appId = process.env.REACT_APP_AGORA_APP_ID;
   const baseUrl = process.env.REACT_APP_BASE_URL;
   const { state } = useLocation();
   const client = useRTCClient();
   const { channelName } = useParams();
+  // const { screenTrack, error } = useLocalScreenTrack(
+  //   screenShareOn,
+  //   {},
+  //   "disable"
+  // );
 
   useEffect(() => {
     async function userJoined(user) {
@@ -100,6 +110,37 @@ export const LiveVideo = () => {
     navigate("/");
   }
 
+  const startScreenSharing = async () => {
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+    });
+    const screenTrack = AgoraRTC.createCustomVideoTrack({
+      mediaStreamTrack: stream.getVideoTracks()[0],
+    });
+
+    await client.unpublish(localCameraTrack); // Unpublish the camera video track
+    await client.publish(screenTrack); // Publish the screen-sharing track
+    setScreenTrack(screenTrack);
+    setScreenShareOn(true);
+
+    screenTrack.on("track-ended", async () => {
+      // Stop screen sharing when the track ends
+      stopScreenSharing();
+    });
+
+    console.log("Screen sharing started");
+  };
+
+  const stopScreenSharing = async () => {
+    if (screenTrack) {
+      await client.publish(localCameraTrack); // Re-publish the camera video track
+      await client.unpublish(screenTrack); // Unpublish the screen-sharing track
+      setScreenTrack(null);
+      console.log("Screen sharing stopped");
+      setScreenShareOn(false);
+    }
+  };
+
   return (
     <div className="pt-8">
       {/* <h2 className="py-3 flex items-center rounded-md text-lg mb-4 text-white">
@@ -144,6 +185,28 @@ export const LiveVideo = () => {
             <RemoteUser user={user} />
           </div>
         ))}
+
+        {/* {screenShareOn ? (
+          <LocalVideoTrack
+            play
+            // style={{ width: "300px", height: "300px" }}
+            track={screenTrack}
+          />
+        ) : null} */}
+        {screenShareOn && screenTrack && (
+          <div className="screen-share-container">
+            <video
+              ref={(ref) => ref && screenTrack.play(ref)}
+              autoPlay
+              playsInline
+              style={{
+                width: "100%",
+                border: "2px solid gray",
+                marginTop: "10px",
+              }}
+            ></video>
+          </div>
+        )}
       </div>
       <div id="localVideo">
         <LocalUser
@@ -215,6 +278,21 @@ export const LiveVideo = () => {
             </svg>
           )}
         </button>
+        {/* <button
+          className="w-10 h-10 bg-white rounded-full mx-1"
+          onClick={() => setScreenShareOn((a) => !a)}
+        >
+          <img src={ScreenShareIcon} alt="screen-share" />
+        </button> */}
+        {!screenShareOn ? (
+          <button className="btn" onClick={startScreenSharing}>
+            Start Screen Share
+          </button>
+        ) : (
+          <button className="btn" onClick={stopScreenSharing}>
+            Stop Screen Share
+          </button>
+        )}
         <button
           id="endConnection"
           onClick={disconnectCall}
