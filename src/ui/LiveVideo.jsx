@@ -10,13 +10,12 @@ import AgoraRTC, {
   usePublish,
   useRemoteAudioTracks,
   useRemoteUsers,
-  useRTCClient,
-  useLocalScreenTrack,
-  LocalVideoTrack,
+  useRTCClient
 } from "agora-rtc-react";
 import MicOff from "../assets/new-mute.png";
 import EndCall from "../assets/phone-call-end.png";
 import ScreenShareIcon from "../assets/screen-share.png";
+import CloseScreenShareIcon from "../assets/close-share-screen.png";
 
 export const LiveVideo = () => {
   const [userDetails, setUserDetails] = useState({});
@@ -192,13 +191,6 @@ export const LiveVideo = () => {
           </div>
         ))}
 
-        {/* {screenShareOn ? (
-          <LocalVideoTrack
-            play
-            // style={{ width: "300px", height: "300px" }}
-            track={screenTrack}
-          />
-        ) : null} */}
         {screenShareOn && screenTrack && (
           <div className="screen-share-container">
             <video
@@ -227,7 +219,10 @@ export const LiveVideo = () => {
       </div>
 
       <div id="mediaControls">
-        <button className="btn" onClick={() => setMic((a) => !a)}>
+        <button
+          className="btn relative mic-icon"
+          onClick={() => setMic((a) => !a)}
+        >
           {micOn ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -250,8 +245,14 @@ export const LiveVideo = () => {
               className="w-8.5 h-9 bg-red-500 rounded-full px-2 py-2"
             />
           )}
+          <p className="mic-tool-tip tool-tip-message">
+            Turn {micOn ? "Off" : "On"} Mic
+          </p>
         </button>
-        <button className="btn" onClick={() => setCamera((a) => !a)}>
+        <button
+          className="btn relative camera-icon"
+          onClick={() => setCamera((a) => !a)}
+        >
           {cameraOn ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -283,26 +284,34 @@ export const LiveVideo = () => {
               />
             </svg>
           )}
+          <p className="camera-tool-tip tool-tip-message">
+            Turn {cameraOn ? "Off" : "On"} Camera
+          </p>
         </button>
-        {/* <button
-          className="w-10 h-10 bg-white rounded-full mx-1"
-          onClick={() => setScreenShareOn((a) => !a)}
-        >
-          <img src={ScreenShareIcon} alt="screen-share" />
-        </button> */}
-        {!screenShareOn ? (
-          <button className="btn" onClick={startScreenSharing}>
-            Start Screen Share
-          </button>
-        ) : (
-          <button className="btn" onClick={stopScreenSharing}>
-            Stop Screen Share
-          </button>
-        )}
+        <button className="btn relative screen-icon">
+          {!screenShareOn ? (
+            <img
+              src={ScreenShareIcon}
+              onClick={startScreenSharing}
+              alt="screen-share"
+              className="w-9 h-9 bg-white rounded-full mx-1 p-1"
+            />
+          ) : (
+            <img
+              src={CloseScreenShareIcon}
+              onClick={stopScreenSharing}
+              alt="close-screen-share"
+              className="w-9 h-9 bg-white rounded-full mx-1 p-1"
+            />
+          )}
+          <p className="screen-tool-tip tool-tip-message">
+            {screenShareOn ? "Stop" : "Start"} Screen Share
+          </p>
+        </button>
         <button
           id="endConnection"
           onClick={disconnectCall}
-          className="w-10 h-10 text-white"
+          className="w-9 h-9 text-white"
         >
           {" "}
           <img src={EndCall} alt="call-end" className="text-white" />

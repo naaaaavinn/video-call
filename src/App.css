@@ -51,7 +51,7 @@ body {
 }
 
 #mediaControls button {
-  padding: 8px;
+  padding: 6px;
 }
 
 #mediaControls button:hover {
@@ -102,4 +102,14 @@ body {
     aspect-ratio: unset;
     min-width: unset;
   }
+}
+
+.mic-icon:hover .mic-tool-tip,
+.camera-icon:hover .camera-tool-tip,
+.screen-icon:hover .screen-tool-tip {
+  display: block;
+}
+
+.tool-tip-message {
+  @apply text-xs absolute -top-5 bg-white whitespace-nowrap px-2 py-1 rounded-md hidden z-10;
 }
