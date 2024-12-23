@@ -27,11 +27,6 @@ export const LiveVideo = () => {
   const { state } = useLocation();
   const client = useRTCClient();
   const { channelName } = useParams();
-  // const { screenTrack, error } = useLocalScreenTrack(
-  //   screenShareOn,
-  //   {},
-  //   "disable"
-  // );
 
   useEffect(() => {
     async function userJoined(user) {
@@ -111,33 +106,44 @@ export const LiveVideo = () => {
   }
 
   const startScreenSharing = async () => {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-    });
-    const screenTrack = AgoraRTC.createCustomVideoTrack({
-      mediaStreamTrack: stream.getVideoTracks()[0],
-    });
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
+      const screenTrack = AgoraRTC.createCustomVideoTrack({
+        mediaStreamTrack: stream.getVideoTracks()[0],
+      });
 
-    await client.unpublish(localCameraTrack); // Unpublish the camera video track
-    await client.publish(screenTrack); // Publish the screen-sharing track
-    setScreenTrack(screenTrack);
-    setScreenShareOn(true);
+      if (localCameraTrack) {
+        await client.unpublish(localCameraTrack); // Unpublish the camera video track
+      }
+      await client.publish(screenTrack); // Publish the screen-sharing track
+      setScreenTrack(screenTrack);
+      setScreenShareOn(true);
 
-    screenTrack.on("track-ended", async () => {
-      // Stop screen sharing when the track ends
-      stopScreenSharing();
-    });
+      screenTrack.on("track-ended", async () => {
+        // Stop screen sharing when the track ends
+        stopScreenSharing();
+      });
 
-    console.log("Screen sharing started");
+      console.log("Screen sharing started");
+    } catch (error) {
+      console.error("Error starting screen sharing:", error);
+    }
   };
 
   const stopScreenSharing = async () => {
     if (screenTrack) {
-      await client.publish(localCameraTrack); // Re-publish the camera video track
-      await client.unpublish(screenTrack); // Unpublish the screen-sharing track
-      setScreenTrack(null);
-      console.log("Screen sharing stopped");
-      setScreenShareOn(false);
+      try {
+        await client.unpublish(screenTrack); // Unpublish the screen-sharing track
+        screenTrack.close();
+        setScreenTrack(null);
+        setScreenShareOn(false);
+        await client.publish(localCameraTrack); // Re-publish the camera video track
+        console.log("Screen sharing stopped");
+      } catch (error) {
+        console.error("Error stopping screen sharing:", error);
+      }
     }
   };
 
