@@ -39,7 +39,7 @@ body {
 }
 
 #mediaControls {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   display: flex;
   align-items: center;
@@ -48,6 +48,7 @@ body {
   width: 100%;
   background: #2e2e2e;
   padding: 0.5rem 0;
+  z-index: 999;
 }
 
 #mediaControls button {
@@ -112,4 +113,8 @@ body {
 
 .tool-tip-message {
   @apply text-xs absolute -top-5 bg-white whitespace-nowrap px-2 py-1 rounded-md hidden z-10;
+}
+
+.screen-share-container {
+  width: 100%;
 }

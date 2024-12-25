@@ -11,6 +11,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: beige;
   height: 100vh;
+  overflow-x: hidden;
 }
 
 #video-stream {
@@ -20,6 +21,13 @@ body {
   width: 100%;
   margin: 0 auto;
   gap: 1.5rem;
+}
+
+.sidebar-member {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  height: 100%;
 }
 
 @media (max-width: 767px) {
@@ -48,9 +56,9 @@ body {
   justify-content: center;
   gap: 1.5rem;
   margin-top: 1rem;
-  padding: .5rem;
+  padding: 0.5rem;
   background: palegoldenrod;
-  border-radius: 6px
+  border-radius: 6px;
 }
 
 .user-name {

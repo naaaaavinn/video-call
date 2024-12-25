@@ -10,12 +10,13 @@ import AgoraRTC, {
   usePublish,
   useRemoteAudioTracks,
   useRemoteUsers,
-  useRTCClient
+  useRTCClient,
 } from "agora-rtc-react";
 import MicOff from "../assets/new-mute.png";
 import EndCall from "../assets/phone-call-end.png";
 import ScreenShareIcon from "../assets/screen-share.png";
 import CloseScreenShareIcon from "../assets/close-share-screen.png";
+import { Box, Grid } from "@mui/material";
 
 export const LiveVideo = () => {
   const [userDetails, setUserDetails] = useState({});
@@ -148,75 +149,192 @@ export const LiveVideo = () => {
 
   return (
     <div className="pt-8">
-      {/* <h2 className="py-3 flex items-center rounded-md text-lg mb-4 text-white">
-        Room: <span className="!text-2xl font-medium ml-2">{channelName}</span>
-      </h2> */}
-      <div id="video-stream" className="px-2">
-        {remoteUsers.map((user) => (
-          <div
-            key={user.uid}
-            className={`relative remote-video-container mx-auto rounded-xl border border-gray-800 ${
-              remoteUsers.length === 1 ? "w-4/5" : "w-full"
-            }`}
-            id={`user-id-${user.uid}`}
+      {screenShareOn && screenTrack ? (
+        <Grid container sx={{ height: "90vh", backgroundColor: "#f9f9f9" }}>
+          {/* Main Presentation Area */}
+          <Grid
+            item
+            xs={9}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#ffffff",
+              borderRight: "1px solid #ddd",
+              padding: 2,
+            }}
+            className="h-[inherit]"
           >
-            <button className="btn absolute top-4 left-4 z-10">
-              {user.hasAudio ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  className="w-9 h-9 text-white px-2 rounded"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
-                  />
-                </svg>
-              ) : (
-                <img
-                  src={MicOff}
-                  alt="Mic off"
-                  className="w-8.5 h-9 bg-red-500 px-2 py-2 rounded"
-                />
-              )}
-            </button>
-            <button className="absolute bottom-4 left-4 z-10 text-white text-lg capitalize">
-              <p>{userDetails[user.uid]}</p>
-            </button>
-            <RemoteUser user={user} />
-          </div>
-        ))}
-
-        {screenShareOn && screenTrack && (
-          <div className="screen-share-container">
-            <video
-              ref={(ref) => ref && screenTrack.play(ref)}
-              autoPlay
-              playsInline
-              style={{
+            <Box
+              sx={{
                 width: "100%",
-                border: "2px solid gray",
-                marginTop: "10px",
+                height: "90%",
+                backgroundColor: "#f5f5f5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "8px",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
               }}
-            ></video>
-          </div>
-        )}
-      </div>
-      <div id="localVideo">
-        <LocalUser
-          audioTrack={localMicrophoneTrack}
-          videoTrack={localCameraTrack}
-          cameraOn={cameraOn}
-          micOn={micOn}
-          playAudio={false}
-          playVideo={cameraOn}
-          className="rounded-xl border-2 border-gray-800"
-        />
-      </div>
+            >
+              <video
+                ref={(ref) => ref && screenTrack.play(ref)}
+                autoPlay
+                playsInline
+                style={{
+                  width: "100%",
+                  border: "2px solid gray",
+                  marginTop: "10px",
+                  height: "100%",
+                }}
+              ></video>
+            </Box>
+          </Grid>
+
+          {/* Sidebar Participants */}
+          <Grid
+            item
+            xs={3}
+            sx={{
+              padding: 2,
+              overflowY: "auto",
+              backgroundColor: "#fdfbe2",
+            }}
+            className="h-[inherit]"
+          >
+            <div
+              className={
+                remoteUsers.length > 3 ? "sidebar-member" : "flex flex-col h-full gap-y-2"
+              }
+            >
+              {remoteUsers.map((user, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    backgroundColor: "#ffffff",
+                    border: "1px solid #ddd",
+                    borderRadius: "8px",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  <div
+                    key={user.uid}
+                    className={`relative mx-auto rounded-xl border border-gray-800`}
+                    id={`user-id-${user.uid}`}
+                  >
+                    <button className="btn absolute top-4 left-4 z-10">
+                      {user.hasAudio ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          className="w-9 h-9 text-white px-2 rounded"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
+                          />
+                        </svg>
+                      ) : (
+                        <img
+                          src={MicOff}
+                          alt="Mic off"
+                          className="w-8.5 h-9 bg-red-500 px-2 py-2 rounded"
+                        />
+                      )}
+                    </button>
+                    <button className="absolute bottom-4 left-4 z-10 text-white text-lg capitalize">
+                      <p>{userDetails[user.uid]}</p>
+                    </button>
+                    <RemoteUser user={user} />
+                  </div>
+                </Box>
+              ))}
+              <Box
+                key={9}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                }}
+              >
+                <LocalUser
+                  audioTrack={localMicrophoneTrack}
+                  videoTrack={localCameraTrack}
+                  cameraOn={cameraOn}
+                  micOn={micOn}
+                  playAudio={false}
+                  playVideo={cameraOn}
+                  className="rounded-xl border-2 border-gray-800"
+                />
+              </Box>
+            </div>
+          </Grid>
+        </Grid>
+      ) : (
+        <div id="video-stream" className="px-2">
+          {remoteUsers.map((user) => (
+            <div
+              key={user.uid}
+              className={`relative remote-video-container mx-auto rounded-xl border border-gray-800 ${
+                remoteUsers.length === 1 ? "w-4/5" : "w-full"
+              }`}
+              id={`user-id-${user.uid}`}
+            >
+              <button className="btn absolute top-4 left-4 z-10">
+                {user.hasAudio ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="w-9 h-9 text-white px-2 rounded"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
+                    />
+                  </svg>
+                ) : (
+                  <img
+                    src={MicOff}
+                    alt="Mic off"
+                    className="w-8.5 h-9 bg-red-500 px-2 py-2 rounded"
+                  />
+                )}
+              </button>
+              <button className="absolute bottom-4 left-4 z-10 text-white text-lg capitalize">
+                <p>{userDetails[user.uid]}</p>
+              </button>
+              <RemoteUser user={user} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!screenShareOn && !screenTrack && (
+        <div id="localVideo">
+          <LocalUser
+            audioTrack={localMicrophoneTrack}
+            videoTrack={localCameraTrack}
+            cameraOn={cameraOn}
+            micOn={micOn}
+            playAudio={false}
+            playVideo={cameraOn}
+            className="rounded-xl border-2 border-gray-800"
+          />
+        </div>
+      )}
 
       <div id="mediaControls">
         <button
